@@ -4,6 +4,8 @@ gem "bootsnap", require: false
 
 gem "devise", "~> 4.9", ">= 4.9.4"
 
+gem "erb", "~> 5.0.2"
+
 gem "importmap-rails"
 
 gem "jbuilder"
@@ -17,6 +19,8 @@ gem "puma", ">= 5.0"
 gem "rails", "~> 8.0.2"
 
 gem "stimulus-rails"
+
+gem "stringio", "~> 3.1.7"
 
 gem "tailwindcss-rails"
 

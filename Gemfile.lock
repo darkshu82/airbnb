@@ -371,6 +371,7 @@ DEPENDENCIES
   brakeman
   debug
   devise (~> 4.9, >= 4.9.4)
+  erb (~> 5.0.2)
   importmap-rails
   jbuilder
   kamal
@@ -383,6 +384,7 @@ DEPENDENCIES
   solid_cache
   solid_queue
   stimulus-rails
+  stringio (~> 3.1.7)
   tailwindcss-rails
   thruster
   turbo-rails
