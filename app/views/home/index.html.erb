@@ -10,7 +10,13 @@
       <% @properties.each do |property| %>
       <div class="group relative">
         <div class="aspect-[1/1] overflow-hidden rounded-md bg-gray-200 transition-transform duration-500 ease-in-out group-hover:scale-110">
-          <%= image_tag property.image_url, alt: "Property image", class: "h-full w-full object-cover object-center lg:h-full lg:w-full" %>
+          <%# image_tag property.image_url, alt: "Property image", class: "h-full w-full object-cover object-center lg:h-full lg:w-full" %>
+          <% if property.images.attached? %>
+            <%= image_tag property.images.first.variant(resize_to_fill: [400, 400]).processed, alt: "Property image", class: "h-full w-full object-cover object-center lg:h-full lg:w-full" %>
+          <% else %>
+            <%= image_tag "placeholder.png", alt: "No image", class: "h-full w-full object-cover object-center lg:h-full lg:w-full" %>
+          <% end %>
+
         </div>
         <div class="mt-2 flex flex-col justify-end">
           <div class="flex justify-between">
@@ -33,7 +39,6 @@
       </div>
       <% end %>
       
-      <!-- More products... -->
     </div>
   </div>
 </div>
