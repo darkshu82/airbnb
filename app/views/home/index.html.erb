@@ -9,10 +9,24 @@
 
       <% @properties.each do |property| %>
       <div class="group relative">
-        <div class="aspect-[1/1] overflow-hidden rounded-md bg-gray-200 transition-transform duration-500 ease-in-out group-hover:scale-110">
+        <div class="">
           <%# image_tag property.image_url, alt: "Property image", class: "h-full w-full object-cover object-center lg:h-full lg:w-full" %>
-          <% if property.images.attached? %>
-            <%= image_tag property.images.first.variant(resize_to_fill: [400, 400]).processed, alt: "Property image", class: "h-full w-full object-cover object-center lg:h-full lg:w-full" %>
+          <% if property.images.attached? %>            
+            <!-- Slider main container -->
+            <div class="swiper aspect-[1/1] overflow-hidden rounded-md bg-gray-200 transition-transform duration-500 ease-in-out group-hover:scale-110">
+              <!-- Additional required wrapper -->
+              <div class="swiper-wrapper">
+                <% property.images.each do |image| %>
+                  <%= image_tag image.variant(resize_to_fill: [400, 400]).processed, alt: "Property image", class: "swiper-slide h-full w-full object-cover object-center lg:h-full lg:w-full" %>
+                <% end %>
+                
+              </div>
+              <!-- If we need navigation buttons -->
+              <div class="swiper-button-prev"></div>
+              <div class="swiper-button-next"></div>
+
+
+            </div>
           <% else %>
             <%= image_tag "placeholder.png", alt: "No image", class: "h-full w-full object-cover object-center lg:h-full lg:w-full" %>
           <% end %>
@@ -28,9 +42,9 @@
             </h3>
             <p class="font-light mr-1 items-center">⭐5.0</p>
           </div>          
-            <p class="ml-05 text-sm text-gray-500">Hosted by Rails</p>
-            <p class="ml-05 text-sm text-gray-500">20-25 Jan</p>
-            <p class="ml-05 text-sm font-light text-gray-800">
+            <p class="ml-0.5 text-sm text-gray-500">Hosted by Rails</p>
+            <p class="ml-0.5 text-sm text-gray-500">20-25 Jan</p>
+            <p class="ml-0.5 text-sm font-light text-gray-800">
               <span class="font-medium text-black">
                 <%= property.price.format %>
               </span> night
