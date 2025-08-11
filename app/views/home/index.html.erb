@@ -3,5 +3,38 @@
   Holiday rental, cabins, beach houses & more
 <% end %>
 
-<h1 class="font-bold text-6xl">Hello World!</h1>
+<div class="bg-white">
+  <div class="mx-auto max-w-2xl px-4 sm:px-6 sm:py-8 lg:max-w-7xl lg:px-8">
+    <div class="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
+
+      <% @properties.each do |property| %>
+      <div class="group relative">
+        <div class="aspect-[1/1] overflow-hidden rounded-md bg-gray-200 transition-transform duration-500 ease-in-out group-hover:scale-110">
+          <%= image_tag property.image_url, alt: "Property image", class: "h-full w-full object-cover object-center lg:h-full lg:w-full" %>
+        </div>
+        <div class="mt-2 flex flex-col justify-end">
+          <div class="flex justify-between">
+            <h3 class="text-base font-medium text-gray-700">
+              <a href="#">
+                <span aria-hidden="true" class="absolute inset-0"></span>
+                <%= "#{property.city}, #{property.country}" %>
+              </a>
+            </h3>
+            <p class="font-light mr-1 items-center">⭐5.0</p>
+          </div>          
+            <p class="ml-05 text-sm text-gray-500">Hosted by Rails</p>
+            <p class="ml-05 text-sm text-gray-500">20-25 Jan</p>
+            <p class="ml-05 text-sm font-light text-gray-800">
+              <span class="font-medium text-black">
+                <%= property.price.format %>
+              </span> night
+            </p>
+        </div>
+      </div>
+      <% end %>
+      
+      <!-- More products... -->
+    </div>
+  </div>
+</div>
 
