@@ -41,7 +41,8 @@
               </a>
             </h3>
             <p class="font-light mr-1 flex items-center">
-              ⭐<%= property.reviews.average(:final_rating)&.round(1) || "N/A" %>
+              ⭐<%= property.average_final_rating || "N/A" %>
+
             </p>
           </div>          
             <p class="ml-0.5 text-sm text-gray-500">Hosted by Rails</p>

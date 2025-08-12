@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_12_010458) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_12_034118) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -56,6 +56,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_12_010458) do
     t.text "image_url"
     t.integer "price_cents"
     t.string "price_currency"
+    t.integer "reviews_count"
+    t.decimal "average_final_rating"
   end
 
   create_table "reviews", force: :cascade do |t|
