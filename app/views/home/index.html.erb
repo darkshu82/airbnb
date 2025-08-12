@@ -40,7 +40,9 @@
                 <%= "#{property.city}, #{property.country}" %>
               </a>
             </h3>
-            <p class="font-light mr-1 items-center">⭐5.0</p>
+            <p class="font-light mr-1 flex items-center">
+              ⭐<%= property.reviews.average(:final_rating)&.round(1) || "N/A" %>
+            </p>
           </div>          
             <p class="ml-0.5 text-sm text-gray-500">Hosted by Rails</p>
             <p class="ml-0.5 text-sm text-gray-500">20-25 Jan</p>
