@@ -10,22 +10,35 @@
       <% @properties.each do |property| %>
       <div class="group relative">
         <div class="">
-          <%# image_tag property.image_url, alt: "Property image", class: "h-full w-full object-cover object-center lg:h-full lg:w-full" %>
           <% if property.images.attached? %>            
-            <!-- Slider main container -->
-            <div class="swiper aspect-[1/1] overflow-hidden rounded-md bg-gray-200 transition-transform duration-500 ease-in-out group-hover:scale-110">
-              <!-- Additional required wrapper -->
-              <div class="swiper-wrapper">
-                <% property.images.each do |image| %>
-                  <%= image_tag image.variant(resize_to_fill: [400, 400]).processed, alt: "Property image", class: "swiper-slide h-full w-full object-cover object-center lg:h-full lg:w-full" %>
-                <% end %>
-                
+            <div class="relative rounded-md bg-gray-200 ">
+              <div class="swiper transition-transform duration-300 ease-in-out group-hover:scale-110">
+                <!-- Additional required wrapper -->
+                <div class="swiper-wrapper">
+                  <% property.images.each do |image| %>
+                    <%= image_tag image.variant(resize_to_fill: [400, 400]).processed, alt: "Property image", class: "swiper-slide h-full w-full object-cover object-center lg:h-full lg:w-full" %>
+                  <% end %>
+                </div>
+                <!-- If we need navigation buttons -->
+                <div class="swiper-button-prev"></div>
+                <div class="swiper-button-next"></div>
               </div>
-              <!-- If we need navigation buttons -->
-              <div class="swiper-button-prev"></div>
-              <div class="swiper-button-next"></div>
-
-
+              <div class="absolute z-10 right-0 top-0 m-4">
+                <svg xmlns="http://www.w3.org/2000/svg" 
+                    viewBox="0 0 32 32" 
+                    aria-hidden="true"
+                    focusable="false"
+                    class="block h-6 w-6 stroke-white stroke-2 fill-none"
+                    data-controller="wishlist"
+                    data-action="click->wishlist#toggle"
+                    data-wishlist-property-id-value="<%= property.id %>"
+                    data-wishlist-wishlist-id-value="<%= current_user&.wishlists&.find_by(property: property)&.id %>"
+                    data-wishlist-is-wishlisted-value="<%= current_user&.wishlists&.exists?(property: property) %>"
+                    data-status="<%= current_user&.wishlists&.exists?(property: property) %>">
+                  <path d="M16 28c7-4.73 14-10 14-17a6.98 6.98 0 0 0-7-7c-1.8 0-3.58.68-4.95 2.05L16 8.1l-2.05-2.05a6.98 6.98 0 0 0-9.90 0A6.98 6.98 0 0 0 2 11c0 7 7 12.27 14 17z">                    
+                  </path>
+                </svg>
+              </div>
             </div>
           <% else %>
             <%= image_tag "placeholder.png", alt: "No image", class: "h-full w-full object-cover object-center lg:h-full lg:w-full" %>

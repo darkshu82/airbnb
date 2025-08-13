@@ -8,7 +8,9 @@ class Property < ApplicationRecord
   validates :country, presence: :true
   monetize :price_cents, allow_nil: true
   has_many_attached :images
-  has_many :reviews
+  has_many :reviews, dependent: :destroy
+  has_many :wishlists, dependent: :destroy
+  has_many :wishlisted_users, through: :wishlists, source: :user
 
   def set_average_final_rating
     avg = reviews.average(:final_rating)&.round(1) || 0.0
