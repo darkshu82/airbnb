@@ -1,15 +1,16 @@
-import { Controller } from "@hotwired/stimulus";
+// app/javascript/controllers/flash_controller.js
+import { Controller } from "@hotwired/stimulus"
+import { showNotification } from "utils/modal"
 
 export default class extends Controller {
+  static values = { notice: String, alert: String }
+  
   connect() {
-    setTimeout(() => {
-      // 페이드 아웃 애니메이션 후 제거 (선택사항)
-      this.element.style.transition = "opacity 0.5s ease";
-      this.element.style.opacity = 0;
-
-      setTimeout(() => {
-        this.element.remove();
-      }, 500);
-    }, 3000); // 3초 후 사라짐
+    if (this.hasNoticeValue && this.noticeValue) {
+      showNotification(this.noticeValue, "success")
+    }
+    if (this.hasAlertValue && this.alertValue) {
+      showNotification(this.alertValue, "error")
+    }
   }
 }

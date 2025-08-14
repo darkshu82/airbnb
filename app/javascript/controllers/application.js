@@ -1,22 +1,9 @@
+// app/javascript/controllers/application.js
 import { Application } from "@hotwired/stimulus"
+import Swal from "sweetalert2"
 
 const application = Application.start()
-
-// Configure Stimulus development experience
 application.debug = false
 window.Stimulus   = application
 
 export { application }
-
-const swiper = new Swiper('.swiper', {
-  // Optional parameters
-  loop: true,
-
-  // Navigation arrows
-  navigation: {
-    nextEl: '.swiper-button-next',
-    prevEl: '.swiper-button-prev',
-  },
-});
-
-

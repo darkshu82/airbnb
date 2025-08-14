@@ -25,7 +25,6 @@
 
 .swiper-button-next::after {
   content: '' !important;
-  
 }
 
 .swiper-button-prev {
