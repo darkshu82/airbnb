@@ -32,8 +32,8 @@
                     data-controller="wishlist"
                     data-action="click->wishlist#toggle"
                     data-wishlist-property-id-value="<%= property.id %>"
-                    data-wishlist-wishlist-id-value="<%= current_user&.wishlists&.find_by(property: property)&.id %>"
-                    data-wishlist-is-wishlisted-value="<%= current_user.present? && current_user.wishlists.exists?(property: property) %>"
+                    data-wishlist-wishlist-id-value="<%= @wishlist_map[property.id] %>"
+                    data-wishlist-is-wishlisted-value="<%= @wishlist_map.key?(property.id) %>"
                     data-status="<%= current_user.present? && current_user.wishlists.exists?(property: property) %>">
                   <path d="M16 28c7-4.73 14-10 14-17a6.98 6.98 0 0 0-7-7c-1.8 0-3.58.68-4.95 2.05L16 8.1l-2.05-2.05a6.98 6.98 0 0 0-9.90 0A6.98 6.98 0 0 0 2 11c0 7 7 12.27 14 17z">                    
                   </path>
@@ -47,7 +47,7 @@
         </div>
         <div class="mt-2 flex flex-col justify-end">
           <div class="flex justify-between">
-            <h3 class="text-base font-medium text-gray-700">
+            <h3 class="text-base font-medium text-gray-700 truncate">
               <a href="#">
                 <span aria-hidden="true" class="absolute inset-0"></span>
                 <%= "#{property.city}, #{property.country}" %>
@@ -57,9 +57,10 @@
               ⭐<%= property.average_final_rating || "N/A" %>
 
             </p>
-          </div>          
-            <p class="ml-0.5 text-sm text-gray-500">Hosted by Rails</p>
-            <p class="ml-0.5 text-sm text-gray-500">20-25 Jan</p>
+          </div>
+            <p class="ml-0.5 text-sm text-gray-500">
+              <%= property.available_dates %>
+            </p>
             <p class="ml-0.5 text-sm font-light text-gray-800">
               <span class="font-medium text-black">
                 <%= property.price.format %>

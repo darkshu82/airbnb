@@ -1,6 +1,7 @@
 # app/controllers/api/sessions_controller.rb
 module Api
   class SessionsController < Api::BaseController
+    include Authenticatable
     skip_before_action :authenticate_user!, only: [ :create ]
     respond_to :json
 

@@ -17,13 +17,19 @@ export default class extends Controller {
   }
 
   async toggle() {
-    const isLoggedIn = document.body.getAttribute('data-logged-in') === 'true'
-    if (this.isWishlistedValue) {
-      await this.removeFromWishlist()
-    } else {
-      await this.addToWishlist()
-    }
+  const isLoggedIn = document.body.getAttribute('data-logged-in') === 'true'
+  if (!isLoggedIn) {
+    showNotification('로그인이 필요합니다', 'error')
+    // window.location.href = '/users/sign_in'
+    return
   }
+
+  if (this.isWishlistedValue) {
+    await this.removeFromWishlist()
+  } else {
+    await this.addToWishlist()
+  }
+}
 
   async addToWishlist() {
     try {
@@ -88,16 +94,6 @@ export default class extends Controller {
   }
 
   updateButtonState() {
-
-    const svgElement = this.element
-
-    if (this.isWishlistedValue) {
-      // 찜한 상태
-      svgElement.setAttribute('data-status', 'true')
-      }
-    else {
-      // 찜하지 않은 상태  
-      svgElement.setAttribute('data-status', 'false')
-    }
+    this.element.setAttribute('data-status', String(this.isWishlistedValue))
   }
 }

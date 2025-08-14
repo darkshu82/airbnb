@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_12_201624) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_14_064728) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -42,14 +42,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_12_201624) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
-  create_table "jwt_denylists", force: :cascade do |t|
-    t.string "jti", null: false
-    t.datetime "exp", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["jti"], name: "index_jwt_denylists_on_jti"
-  end
-
   create_table "properties", force: :cascade do |t|
     t.string "name"
     t.string "headline"
@@ -66,6 +58,18 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_12_201624) do
     t.string "price_currency"
     t.integer "reviews_count"
     t.decimal "average_final_rating"
+  end
+
+  create_table "reservations", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "property_id", null: false
+    t.date "checkin_date"
+    t.date "checkout_date"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["property_id"], name: "index_reservations_on_property_id"
+    t.index ["user_id", "property_id", "checkin_date", "checkout_date"], name: "idx_on_user_id_property_id_checkin_date_checkout_da_7282e2dfd7", unique: true
+    t.index ["user_id"], name: "index_reservations_on_user_id"
   end
 
   create_table "reviews", force: :cascade do |t|
@@ -109,6 +113,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_12_201624) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "reservations", "properties"
+  add_foreign_key "reservations", "users"
   add_foreign_key "reviews", "properties"
   add_foreign_key "reviews", "users"
   add_foreign_key "wishlists", "properties"

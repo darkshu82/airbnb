@@ -1,6 +1,6 @@
 # app/controllers/api/base_controller.rb
 class Api::BaseController < ApplicationController
-  before_action :authenticate_user!
+  include Authenticatable
   respond_to :json
 
   private

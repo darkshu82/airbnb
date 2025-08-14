@@ -1,18 +1,12 @@
 # app/controllers/api/wishlists_controller.rb
 module Api
   class WishlistsController < Api::BaseController
+    include Authenticatable
     before_action :validate_property_exists, only: [ :create ]
 
     def index
       Rails.logger.info "=== INDEX ACTION ==="
       Rails.logger.info "Current user: #{current_user&.id}"
-      Rails.logger.info "User signed in: #{user_signed_in?}"
-
-      # 세션 기반 인증 확인
-      unless user_signed_in?
-        Rails.logger.warn "User not signed in via session"
-        render json: { error: "로그인이 필요합니다" }, status: :unauthorized and return
-      end
 
       wishlists = current_user.wishlists.includes(:property)
       Rails.logger.info "Wishlists count: #{wishlists.count}"
@@ -41,15 +35,8 @@ module Api
     def create
       Rails.logger.info "=== CREATE ACTION ==="
       Rails.logger.info "Current user: #{current_user&.id}"
-      Rails.logger.info "User signed in: #{user_signed_in?}"
       Rails.logger.info "Params: #{params.inspect}"
       Rails.logger.info "Session: #{session.inspect}"
-
-      # 세션 기반 인증 확인
-      unless user_signed_in?
-        Rails.logger.warn "User not signed in via session"
-        render json: { error: "로그인이 필요합니다" }, status: :unauthorized and return
-      end
 
       if current_user.wishlists.exists?(property_id: wishlist_params[:property_id])
         Rails.logger.info "Already exists in wishlist"
@@ -80,14 +67,7 @@ module Api
     def destroy
       Rails.logger.info "=== DESTROY ACTION ==="
       Rails.logger.info "Current user: #{current_user&.id}"
-      Rails.logger.info "User signed in: #{user_signed_in?}"
       Rails.logger.info "Wishlist ID: #{params[:id]}"
-
-      # 세션 기반 인증 확인
-      unless user_signed_in?
-        Rails.logger.warn "User not signed in via session"
-        render json: { error: "로그인이 필요합니다" }, status: :unauthorized and return
-      end
 
       wishlist = current_user.wishlists.find(params[:id])
 
@@ -111,7 +91,7 @@ module Api
     private
 
     def wishlist_params
-      params.permit(:property_id)
+      params.require(:wishlist).permit(:property_id)
     end
 
     def validate_property_exists
@@ -121,17 +101,6 @@ module Api
       unless Property.exists?(id: property_id)
         Rails.logger.error "Property not found: #{property_id}"
         render json: { error: "해당 부동산을 찾을 수 없습니다" }, status: :not_found and return
-      end
-    end
-
-    # 추가: 인증 실패 시 JSON 응답 처리
-    def authenticate_user!
-      unless user_signed_in?
-        Rails.logger.warn "Authentication failed - no valid session"
-        render json: {
-          error: "로그인이 필요합니다",
-          redirect: new_user_session_path
-        }, status: :unauthorized and return
       end
     end
   end
