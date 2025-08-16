@@ -44,10 +44,12 @@
   content: '' !important;
 }
 
-svg[data-status="true"] {
-  fill: #FF385C;
+svg[data-status="true"], 
+[data-status="true"] svg {
+    fill: #FF385C !important;
 }
 
-svg[data-status="false"] {
-  fill: none;
+svg[data-status="false"], 
+[data-status="false"] svg {
+    fill: none !important;
 }

@@ -17,19 +17,23 @@ export default class extends Controller {
   }
 
   async toggle() {
-  const isLoggedIn = document.body.getAttribute('data-logged-in') === 'true'
-  if (!isLoggedIn) {
-    showNotification('로그인이 필요합니다', 'error')
-    // window.location.href = '/users/sign_in'
-    return
-  }
+    event.preventDefault();
+    event.stopPropagation();
+    event.stopImmediatePropagation();
+    
+    const isLoggedIn = document.body.getAttribute('data-logged-in') === 'true'
+    if (!isLoggedIn) {
+      showNotification('로그인이 필요합니다', 'error')
+      // window.location.href = '/users/sign_in'
+      return
+    }
 
-  if (this.isWishlistedValue) {
-    await this.removeFromWishlist()
-  } else {
-    await this.addToWishlist()
+    if (this.isWishlistedValue) {
+      await this.removeFromWishlist()
+    } else {
+      await this.addToWishlist()
+    }
   }
-}
 
   async addToWishlist() {
     try {

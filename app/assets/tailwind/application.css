@@ -1,8 +1,15 @@
 @import "tailwindcss";
 
+@plugin "@tailwindcss/forms";
+@plugin "@tailwindcss/aspect-ratio";
+
 @theme {
-      --color-primary: #FF5A5F;       /* DEFAULT */
-      --color-primary-dark: #FF385C;  /* dark */
-      --color-chocolate: #7B3F00;
-      --color-deep-blue: #00008B;
-    }
+  --color-primary: #FF5A5F   /* DEFAULT */
+  --color-primary-dark: #FF385C  /* dark */
+  --color-chocolate: #7B3F00
+  --color-deep-blue: #00008B
+
+  gridTemplateRows: {
+    auto-auto-1fr: "auto auto 1fr"
+  }
+}
