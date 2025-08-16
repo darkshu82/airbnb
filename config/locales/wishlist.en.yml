@@ -1,0 +1,26 @@
+# config/locales/wishlist.en.yml
+en:
+  wishlist:
+    messages:
+      already_wishlisted: "Already in wishlist"
+      not_found: "Wishlist item not found"
+      property_not_found: "Property not found"
+      added_success: "Added to wishlist"
+      removed_success: "Removed from wishlist"
+      server_error: "Server error occurred"
+      login_required: "Login required"
+      invalid_state: "Invalid wishlist state"
+      api_error: "API call failed"
+      network_error: "Please check your network connection"
+      timeout_error: "Request timeout"
+      unknown_error: "Unknown error occurred"
+
+    actions:
+      add_to_wishlist: "Add to wishlist"
+      remove_from_wishlist: "Remove from wishlist"
+      add_property_to_wishlist: "Add %{property} to wishlist"
+      remove_property_from_wishlist: "Remove %{property} from wishlist"
+
+    states:
+      wishlisted: "Currently wishlisted"
+      not_wishlisted: "Not wishlisted"

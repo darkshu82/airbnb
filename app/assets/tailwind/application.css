@@ -4,12 +4,8 @@
 @plugin "@tailwindcss/aspect-ratio";
 
 @theme {
-  --color-primary: #FF5A5F   /* DEFAULT */
-  --color-primary-dark: #FF385C  /* dark */
-  --color-chocolate: #7B3F00
-  --color-deep-blue: #00008B
-
-  gridTemplateRows: {
-    auto-auto-1fr: "auto auto 1fr"
-  }
+  --color-primary: #FF5A5F;
+  --color-primary-dark: #FF385C;
+  --color-chocolate: #7B3F00;
+  --color-deep-blue: #00008B;
 }

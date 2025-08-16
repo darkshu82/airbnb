@@ -1,7 +1,15 @@
 // app/javascript/controllers/wishlist_controller.js
 import { Controller } from "@hotwired/stimulus"
-import { getCSRFToken } from "utils/csrf"
 import { showNotification } from "utils/modal"
+import { wishlistService } from "services/wishlistService"
+
+const MESSAGES = {
+  LOGIN_REQUIRED: '로그인이 필요합니다',
+  INVALID_STATE: '찜 상태가 올바르지 않습니다',
+  DEFAULT_ERROR: '오류가 발생했습니다',
+  ADD_SUCCESS: '찜 목록에 추가되었습니다',
+  REMOVE_SUCCESS: '찜 목록에서 제거되었습니다'
+}
 
 export default class extends Controller {
   static targets = ["button", "icon"]
@@ -12,92 +20,123 @@ export default class extends Controller {
   }
 
   connect() {
-    this.isWishlistedValue = this.isWishlistedValue === true || this.isWishlistedValue === 'true'
+    this.normalizeValues()
     this.updateButtonState()
+    this.setupAccessibility() // 접근성 설정 추가
   }
 
-  async toggle() {
-    event.preventDefault();
-    event.stopPropagation();
-    event.stopImmediatePropagation();
+  // 접근성 설정 메소드 추가
+  setupAccessibility() {
+    const button = this.element
     
-    const isLoggedIn = document.body.getAttribute('data-logged-in') === 'true'
-    if (!isLoggedIn) {
-      showNotification('로그인이 필요합니다', 'error')
-      // window.location.href = '/users/sign_in'
+    // role과 tabindex 설정
+    if (!button.hasAttribute('role')) {
+      button.setAttribute('role', 'button')
+    }
+    
+    if (!button.hasAttribute('tabindex')) {
+      button.setAttribute('tabindex', '0')
+    }
+
+    // 키보드 이벤트 리스너 추가
+    if (!button.hasAttribute('data-keyboard-listener')) {
+      button.addEventListener('keydown', this.handleKeydown.bind(this))
+      button.setAttribute('data-keyboard-listener', 'true')
+    }
+
+    this.updateAriaLabel()
+  }
+
+  // 키보드 접근성 핸들러
+  handleKeydown(event) {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault()
+      this.toggle(event)
+    }
+  }
+
+  // ARIA 라벨 업데이트
+  updateAriaLabel() {
+    const isWishlisted = Boolean(this.isWishlistedValue)
+    const label = isWishlisted ? '찜 목록에서 제거' : '찜 목록에 추가'
+    this.element.setAttribute('aria-label', label)
+    
+    // 상태 표시를 위한 aria-pressed 추가
+    this.element.setAttribute('aria-pressed', isWishlisted.toString())
+  }
+
+  normalizeValues() {
+    this.isWishlistedValue = this.isWishlistedValue === true || this.isWishlistedValue === 'true'
+    this.wishlistIdValue = (!this.wishlistIdValue || isNaN(this.wishlistIdValue) || this.wishlistIdValue === 0) ? null : this.wishlistIdValue
+  }
+
+  async toggle(event) {
+    event.preventDefault()
+    event.stopPropagation()
+
+    if (document.body.getAttribute('data-logged-in') !== 'true') {
+      showNotification(MESSAGES.LOGIN_REQUIRED, 'error')
       return
     }
 
-    if (this.isWishlistedValue) {
-      await this.removeFromWishlist()
-    } else {
-      await this.addToWishlist()
+    // 로딩 상태 표시 (접근성)
+    this.element.setAttribute('aria-busy', 'true')
+
+    try {
+      if (this.isWishlistedValue) {
+        await this.removeFromWishlist()
+      } else {
+        await this.addToWishlist()
+      }
+    } catch (error) {
+      showNotification(error.message || MESSAGES.DEFAULT_ERROR, 'error')
+    } finally {
+      // 로딩 상태 해제
+      this.element.setAttribute('aria-busy', 'false')
     }
   }
 
   async addToWishlist() {
-    try {
-      const response = await fetch('/api/wishlists', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRF-Token': getCSRFToken(),
-        },
-        credentials: 'include',
-        body: JSON.stringify({
-          property_id: this.propertyIdValue
-        })
-      })
-
-      const data = await response.json()
-
-      if (response.ok) {
-        this.wishlistIdValue = data.id
-        this.isWishlistedValue = true
-        this.updateButtonState()
-        showNotification(data.message || '찜 목록에 추가되었습니다', 'success')
-      } else {
-        showNotification(data.error || '오류가 발생했습니다', 'error')
-      }
-    } catch (error) {
-      console.error('Add to wishlist error:', error)
-      showNotification('네트워크 오류가 발생했습니다', 'error')
-    }
+    const data = await wishlistService.addWishlist(this.propertyIdValue)
+    this.wishlistIdValue = data.id
+    this.isWishlistedValue = true
+    this.updateButtonState()
+    this.updateAriaLabel() // 접근성 라벨 업데이트
+    showNotification(data.message || MESSAGES.ADD_SUCCESS, 'success')
+    this.dispatch('wishlistAdded', { 
+      detail: { propertyId: this.propertyIdValue, wishlistId: data.id } 
+    })
   }
 
   async removeFromWishlist() {
     if (!this.wishlistIdValue) {
-      console.error('Wishlist ID is missing')
+      showNotification(MESSAGES.INVALID_STATE, 'error')
       return
     }
 
-    try {
-      const response = await fetch(`/api/wishlists/${this.wishlistIdValue}`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRF-Token': getCSRFToken(),
-        },
-        credentials: 'include'
-      })
+    const removedPropertyId = this.propertyIdValue
+    const removedWishlistId = this.wishlistIdValue
 
-      const data = await response.json()
-
-      if (response.ok) {
-        this.wishlistIdValue = null
-        this.isWishlistedValue = false
-        this.updateButtonState()
-        showNotification(data.message || '찜 목록에서 제거되었습니다', 'success')
-      } else {
-        showNotification(data.error || '오류가 발생했습니다', 'error')
-      }
-    } catch (error) {
-      console.error('Remove from wishlist error:', error)
-      showNotification('네트워크 오류가 발생했습니다', 'error')
-    }
+    const data = await wishlistService.removeWishlist(this.wishlistIdValue)
+    this.wishlistIdValue = null
+    this.isWishlistedValue = false
+    this.updateButtonState()
+    this.updateAriaLabel() // 접근성 라벨 업데이트
+    showNotification(data.message || MESSAGES.REMOVE_SUCCESS, 'success')
+    this.dispatch('wishlistRemoved', { 
+      detail: { propertyId: removedPropertyId, wishlistId: removedWishlistId } 
+    })
   }
 
   updateButtonState() {
-    this.element.setAttribute('data-status', String(this.isWishlistedValue))
+    const isWishlisted = Boolean(this.isWishlistedValue)
+    this.element.setAttribute('data-status', isWishlisted.toString())
+  }
+
+  updateFromSync(isWishlisted, wishlistId) {
+    this.isWishlistedValue = isWishlisted
+    this.wishlistIdValue = wishlistId
+    this.updateButtonState()
+    this.updateAriaLabel() // 동기화 시에도 접근성 라벨 업데이트
   }
 }

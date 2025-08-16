@@ -9,3 +9,4 @@ pin "sweetalert2", to: "https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetal
 pin "utils/modal", to: "utils/modal.js"
 pin "swiper", to: "https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.mjs"
 pin "@tailwindcss/forms", to: "https://esm.run/@tailwindcss/forms@0.5.10"
+pin "services/wishlistService", to: "services/wishlistService.js"

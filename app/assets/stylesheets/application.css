@@ -37,16 +37,15 @@
   border-width: 4px;
   border-color: white;
   box-sizing: border-box;
-  
 }
 
 .swiper-button-prev::after {
   content: '' !important;
 }
 
-svg[data-status="true"], 
+svg[data-status="true"],
 [data-status="true"] svg {
-    fill: #FF385C !important;
+    fill: var(--color-primary) !important;
 }
 
 svg[data-status="false"], 
