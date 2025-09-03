@@ -14,7 +14,7 @@ gem "jbuilder"
 
 gem "money-rails", "~> 1.7"
 
-gem "pg", "~> 1.1"
+gem "pg", "~> 1.6"
 
 gem "propshaft"
 
